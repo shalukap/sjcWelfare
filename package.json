@@ -20,7 +20,13 @@
         "@vitejs/plugin-react": "^5.0.4",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
+<<<<<<< HEAD
         "react-hot-toast": "^2.6.0",
         "react-router-dom": "^7.9.4"
+=======
+        "react-icons": "^5.5.0",
+        "react-router-dom": "^7.9.4",
+        "sweetalert2": "^11.7.27"
+>>>>>>> 812dd105573c3990db6f9234730f773a6aaee26f
     }
 }
