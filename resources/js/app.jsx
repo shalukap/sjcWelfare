@@ -6,22 +6,48 @@ import Home from './pages/home';
 import '../css/app.css';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/admin/dashboard';
-
-
+import StudentList from './pages/students/StudentList';
+import StudentForm from './pages/students/StudentForm';
+import StudentUpgrade from './pages/students/StudentUpgrade';
+import FeeAssignmentList from './pages/fee-assignments/FeeAssignmentList';
+import FeeAssignmentCreateGrade from './pages/fee-assignments/FeeAssignmentCreateGrade';
+import FeeAssignmentEdit from './pages/fee-assignments/FeeAssignmentEdit';
+import PaymentList from './pages/payments/PaymentList';
+import PaymentForm from './pages/payments/PaymentForm';
 
 export function App() {
-return (
-<BrowserRouter>
-<Routes>
-<Route path="/login" element={<Login/>} />
-<Route path="/" element={<Home/>} />
-<Route element={<ProtectedRoute/>}>
-  <Route path="/admin/*" element={<Dashboard/>} />
-</Route>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login/>} />
+        <Route path="/" element={<Home/>} />
+        <Route element={<ProtectedRoute/>}>
+          <Route path="/admin" element={<Dashboard/>}>
+            <Route path="dashboard" element={<div className="p-8"><h1 className="text-2xl font-bold">Welcome to Admin Dashboard</h1></div>} />
+            <Route path="students" element={<StudentList/>} />
+            <Route path="students/create" element={<StudentForm/>} />
+            <Route path="students/edit/:id" element={<StudentForm/>} />
+            <Route path="students/upgrade" element={<StudentUpgrade/>} />
+            <Route path="fee-assignments" element={<FeeAssignmentList/>} />
+            <Route path="fee-assignments/create-grade" element={<FeeAssignmentCreateGrade/>} />
+            <Route path="fee-assignments/edit/:id" element={<FeeAssignmentEdit/>} />
+            <Route path="payments" element={<PaymentList/>} />
+            <Route path="payments/create" element={<PaymentForm/>} />
+            <Route path="payments/edit/:id" element={<PaymentForm/>} />
+            {/* Add other admin routes here */}
+            <Route path="users" element={<div className="p-8"><h1 className="text-2xl font-bold">Users Management</h1></div>} />
+            <Route path="roles" element={<div className="p-8"><h1 className="text-2xl font-bold">Roles Management</h1></div>} />
+            <Route path="settings" element={<div className="p-8"><h1 className="text-2xl font-bold">Settings</h1></div>} />
+          </Route>
+        </Route>
 
-</Routes>
-</BrowserRouter>
-);
+        {/* Redirect root admin to dashboard */}
+        <Route path="/admin" element={<ProtectedRoute/>}>
+          <Route index element={<div className="p-8"><h1 className="text-2xl font-bold">Welcome to Admin Dashboard</h1></div>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 const container = document.getElementById("root");
@@ -35,5 +61,3 @@ if (!container.hasAttribute("data-react-root")) {
   );
   container.setAttribute("data-react-root", "true");
 }
-
-
