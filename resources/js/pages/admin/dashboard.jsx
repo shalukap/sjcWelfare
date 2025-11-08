@@ -41,12 +41,7 @@ export default function Dashboard() {
             {/* Scrollable menu */}
             <div className='flex flex-col gap-1 p-2 mt-2 h-[calc(100vh-180px)] overflow-y-auto'>
               {menuItem.map((item,index)=>(
-<<<<<<< HEAD
-            <Link key={index} to ={item.path} className={`hover:bg-blue-400 rounded-md p-2 transition-all p-5 ${location.pathname===item.path?'bg-white rounded-md transition p-5':'bg-blue-900 text-white'}`} onClick={item.onClick}>
-              {item.name}
-            </Link>
-          ))}
-=======
+
                 <Link
                   key={index}
                   to={item.path}
@@ -58,7 +53,7 @@ export default function Dashboard() {
                   {item.name}
                 </Link>
               ))}
->>>>>>> 812dd105573c3990db6f9234730f773a6aaee26f
+
             </div>
         </div>
 

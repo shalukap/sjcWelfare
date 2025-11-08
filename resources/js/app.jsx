@@ -6,22 +6,7 @@ import Home from './pages/home';
 import '../css/app.css';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/admin/dashboard';
-<<<<<<< HEAD
-import { Toaster } from 'react-hot-toast';
 
-
-
-export function App() {
-return (
-<BrowserRouter>
-<Toaster position="top-right" />
-<Routes>
-<Route path="/login" element={<Login/>} />
-<Route path="/" element={<Home/>} />
-<Route element={<ProtectedRoute/>}>
-  <Route path="/admin/*" element={<Dashboard/>} />
-</Route>
-=======
 import StudentList from './pages/students/StudentList';
 import StudentForm from './pages/students/StudentForm';
 import StudentUpgrade from './pages/students/StudentUpgrade';
@@ -56,7 +41,7 @@ export function App() {
             <Route path="settings" element={<div className="p-8"><h1 className="text-2xl font-bold">Settings</h1></div>} />
           </Route>
         </Route>
->>>>>>> 812dd105573c3990db6f9234730f773a6aaee26f
+
 
         {/* Redirect root admin to dashboard */}
         <Route path="/admin" element={<ProtectedRoute/>}>
