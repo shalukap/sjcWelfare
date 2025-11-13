@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'permissions',
+        'is_admin',
     ];
 
     /**
@@ -37,13 +39,30 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string,string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'permissions' => 'array',
+        'is_admin' => 'boolean',
+    ];
+
+    public function hasPermission(string $module, string $action): bool
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        // Admin users bypass permission checks
+        if ($this->is_admin) {
+            return true;
+        }
+
+        $permissions = $this->permissions ?? [];
+        if (!is_array($permissions)) {
+            return false;
+        }
+        $modulePermissions = $permissions[$module] ?? [];
+        if (!is_array($modulePermissions)) {
+            return false;
+        }
+        return !empty($modulePermissions[$action]) === true;
     }
 }

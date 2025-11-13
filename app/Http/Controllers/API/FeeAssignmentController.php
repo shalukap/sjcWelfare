@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class FeeAssignmentController extends Controller
 {
+    public function __construct()
+    {
+
+    }
+
     /**
      * Display a listing of fee assignments with search functionality.
      */

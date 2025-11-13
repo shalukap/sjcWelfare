@@ -2,32 +2,36 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../axios.js';
 import '../../css/bgimg.css'
+import { usePermissions } from '../contexts/PermissionContext';
 
 export default function login() {
    const nav=useNavigate()
+   const { reloadUser } = usePermissions();
    const [email,setEmail]=useState('')
    const [password,setPassword]=useState('')
 
    async function handleLogin(e){
     e.preventDefault();
-    try {      
+    try {
        api.post('/login', { email, password })
         .then(response => {
-      console.log('controller',response.data);
       localStorage.setItem('token',response.data.token);
-     nav('/admin/dashboard')
+      // Reload user permissions after successful login
+      reloadUser().then(() => {
+        nav('/admin/dashboard')
+      });
     })
     .catch(error => {
       console.error(error);
     });
-    }   
-   
+    }
+
     catch (error) {
       console.error(error);
     }
    }
   return (
-   
+
   <div className='w-full h-screen flex justify-center items-center bg-blue-900 bgimg'>
   <div className='w-[600px] h-[400px] bg-white/20 backdrop-blur-xl rounded-2xl flex justify-center items-center p-10 flex-col'>
     <div className='flex'>

@@ -5,15 +5,21 @@ import { confirm, success, error as swalError } from '../../utils/swal';
 import { FaEdit, FaMoneyBillAlt } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
 import { CgAddR } from 'react-icons/cg';
+import { usePermissions } from '../../contexts/PermissionContext';
 
 const StudentList = () => {
+  const { hasPermission, permissions, loading } = usePermissions();
+  const checkPermission = (module, action) => {
+    if (loading) return false;
+    return hasPermission(module, action);
+  };
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [searchAdmission, setSearchAdmission] = useState('');
   const [searchName, setSearchName] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const grades = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', 'A/L'];
 
@@ -45,7 +51,7 @@ const StudentList = () => {
       console.error('Failed to fetch students', error);
       swalError('Failed to load students', 'Could not fetch students. Please try again.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -92,7 +98,7 @@ const StudentList = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <div className="p-4 text-white">Loading...</div>;
   }
 
@@ -193,21 +199,27 @@ const StudentList = () => {
                   </span>
                 </td>
                 <td className="px-4 py-2">
-                  <Link
-                    to={`/admin/payments/create?admission_number=${s.admission_number}`}
-                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-xl hover:bg-blue-700 transition-colors"
-                  >
-                    <FaMoneyBillAlt className='mr-2'/>
-                    Pay
-                  </Link>
+                  {checkPermission('Payments', 'Add') && (
+                    <Link
+                      to={`/admin/payments/create?admission_number=${s.admission_number}`}
+                      className="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-xl hover:bg-blue-700 transition-colors"
+                    >
+                      <FaMoneyBillAlt className='mr-2'/>
+                      Pay
+                    </Link>
+                  )}
                 </td>
                 <td className="flex items-center gap-3 px-4 py-2">
-                  <Link to={`/admin/students/edit/${s.id}`}>
-                    <FaEdit className="text-2xl hover:text-blue-700" />
-                  </Link>
-                  <button onClick={() => handleDelete(s.id)} title="Delete Student">
-                    <MdDeleteForever className="text-3xl hover:text-red-700" />
-                  </button>
+                  {checkPermission('Students', 'Edit') && (
+                    <Link to={`/admin/students/edit/${s.id}`}>
+                      <FaEdit className="text-2xl hover:text-blue-700" />
+                    </Link>
+                  )}
+                  {checkPermission('Students', 'Delete') && (
+                    <button onClick={() => handleDelete(s.id)} title="Delete Student">
+                      <MdDeleteForever className="text-3xl hover:text-red-700" />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -217,7 +229,7 @@ const StudentList = () => {
 {filteredStudents.length === 0 && (
   <div className="text-center py-8 bg-white">
     <p className="text-gray-500 text-lg">No students found</p>
-    {students.length === 0 && (
+    {students.length === 0 && checkPermission('Students', 'Add') && (
       <Link
         to="/admin/students/create"
         className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -231,15 +243,17 @@ const StudentList = () => {
       </div>
 
       {/* Floating Action Buttons */}
-      <div className="fixed right-4 bottom-4 flex flex-col gap-3">
-        <Link
-          to="/admin/students/create"
-          className="flex items-center justify-center rounded-full bg-blue-600 p-4 text-white shadow-lg hover:bg-blue-700"
-          title="Add Student"
-        >
-          <CgAddR className="text-3xl" />
-        </Link>
-      </div>
+      {checkPermission('Students', 'Add') && (
+        <div className="fixed right-4 bottom-4 flex flex-col gap-3">
+          <Link
+            to="/admin/students/create"
+            className="flex items-center justify-center rounded-full bg-blue-600 p-4 text-white shadow-lg hover:bg-blue-700"
+            title="Add Student"
+          >
+            <CgAddR className="text-3xl" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

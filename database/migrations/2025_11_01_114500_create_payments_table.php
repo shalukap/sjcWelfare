@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
+        if (!Schema::hasTable('payments')) {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('fee_assignment_id')->constrained('fee_assignments')->onDelete('restrict');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->foreignId('cancelled_by_user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
+    }
     }
 
     public function down()
