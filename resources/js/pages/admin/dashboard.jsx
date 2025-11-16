@@ -1,31 +1,50 @@
 import React from 'react'
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../axios'
+import { usePermissions } from '../../contexts/PermissionContext'
 
 export default function Dashboard() {
   const navigate = useNavigate()
+  const { hasPermission, hasAnyPermission, loading, permissions, user, logout: contextLogout } = usePermissions()
 
   function handleLogout(){
-    axios.post('/api/logout',{},{withCredentials:true}).then((res)=>{
+    api.post('/logout').then((res)=>{
+      contextLogout()
       localStorage.removeItem('token')
       navigate('/login')
     }).catch((err)=>{
-      console.log(err)
     })
   }
 
   const location = useLocation()
-  const menuItem = [
-    {name:'Dashboard',path:'/admin/dashboard'},
-    {name:'Students',path:'/admin/students'},
-    {name:'Student Upgrade',path:'/admin/students/upgrade'},
-    {name:'Fee Assignments',path:'/admin/fee-assignments'},
-    {name:'Payments',path:'/admin/payments'},
-    {name:'Users',path:'/admin/users'},
-    {name:'Roles',path:'/admin/roles'},
-    {name:'Settings',path:'/admin/settings'},
-    {name:'Logout',path:'/login',onClick:handleLogout},
+
+  const allMenuItems = [
+    {name:'Dashboard',path:'/admin/dashboard', show: true},
+    {name:'Students',path:'/admin/students', permission: {module: 'Students', action: 'View'}},
+    {name:'Student Upgrade',path:'/admin/students/upgrade', permission: {module: 'Upgrading', action: 'View'}},
+    {name:'Fee Assignments',path:'/admin/fee-assignments', permission: {module: 'Fee Assignment', action: 'View'}},
+    {name:'Payments',path:'/admin/payments', permission: {module: 'Payments', action: 'View'}},
+    {name:'Users',path:'/admin/users', permission: {module: 'Users', action: 'View'}},
+    {name:'Roles',path:'/admin/roles', show: false},
+    {name:'Settings',path:'/admin/settings', show: false},
+    {name:'Logout',path:'/login',onClick:handleLogout, show: true},
   ]
+
+
+  const menuItem = allMenuItems.filter(item => {
+    if (item.show !== undefined) {
+      return item.show;
+    }
+    if (item.permission) {
+      if (loading) {
+        return false;
+      }
+
+      const hasPerm = hasPermission(item.permission.module, item.permission.action);
+      return hasPerm;
+    }
+    return false;
+  })
 
   return (
     <div className='w-full h-screen flex'>

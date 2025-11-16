@@ -4,8 +4,14 @@ import { fetchFeeAssignments, deleteFeeAssignment } from '../../api/feeAssignmen
 import { FaEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
 import Swal from 'sweetalert2';
+import { usePermissions } from '../../contexts/PermissionContext';
 
 const FeeAssignmentList = () => {
+  const { hasPermission, permissions, loading: permissionsLoading } = usePermissions();
+  const checkPermission = (module, action) => {
+    if (permissionsLoading) return false;
+    return hasPermission(module, action);
+  };
   const [feeAssignments, setFeeAssignments] = useState([]);
   const [filteredAssignments, setFilteredAssignments] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -84,12 +90,14 @@ const FeeAssignmentList = () => {
         <h2 className="mb-6 text-center text-2xl font-semibold">Fee Assignments</h2>
 
         <div className="flex flex-col gap-6 items-center">
-          <Link
-            to="/admin/fee-assignments/create-grade"
-            className="rounded-md bg-green-600 px-6 py-3 text-white hover:bg-green-700 text-lg font-medium"
-          >
-            Assign to Grade
-          </Link>
+          {checkPermission('Fee Assignment', 'Add') && (
+            <Link
+              to="/admin/fee-assignments/create-grade"
+              className="rounded-md bg-green-600 px-6 py-3 text-white hover:bg-green-700 text-lg font-medium"
+            >
+              Assign to Grade
+            </Link>
+          )}
 
           <div className="w-full max-w-md">
             <input
@@ -136,15 +144,19 @@ const FeeAssignmentList = () => {
                   </span>
                 </td>
                 <td className="flex items-center gap-3 px-4 py-2">
-                  <Link to={`/admin/fee-assignments/edit/${assignment.id}`}>
-                    <FaEdit className="text-2xl hover:text-blue-700" />
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(assignment.id)}
-                    title="Delete Fee Assignment"
-                  >
-                    <MdDeleteForever className="text-3xl hover:text-red-700" />
-                  </button>
+                  {checkPermission('Fee Assignment', 'Edit') && (
+                    <Link to={`/admin/fee-assignments/edit/${assignment.id}`}>
+                      <FaEdit className="text-2xl hover:text-blue-700" />
+                    </Link>
+                  )}
+                  {checkPermission('Fee Assignment', 'Delete') && (
+                    <button
+                      onClick={() => handleDelete(assignment.id)}
+                      title="Delete Fee Assignment"
+                    >
+                      <MdDeleteForever className="text-3xl hover:text-red-700" />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

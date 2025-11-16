@@ -4,8 +4,14 @@ import { fetchPayments, deletePayment, cancelPayment } from '../../api/payments'
 import { FaEdit } from 'react-icons/fa';
 import { MdDeleteForever, MdCancel } from 'react-icons/md';
 import Swal from 'sweetalert2';
+import { usePermissions } from '../../contexts/PermissionContext';
 
 const PaymentList = () => {
+  const { hasPermission, permissions, loading: permissionsLoading } = usePermissions();
+  const checkPermission = (module, action) => {
+    if (permissionsLoading) return false;
+    return hasPermission(module, action);
+  };
   const [payments, setPayments] = useState([]);
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -129,12 +135,14 @@ const PaymentList = () => {
         <h2 className="mb-6 text-center text-2xl font-semibold">Payment Records</h2>
 
         <div className="flex flex-col gap-6 items-center">
-          <Link
-            to="/admin/payments/create"
-            className="rounded-md bg-green-600 px-6 py-3 text-white hover:bg-green-700 text-lg font-medium"
-          >
-            Record New Payment
-          </Link>
+          {checkPermission('Payments', 'Add') && (
+            <Link
+              to="/admin/payments/create"
+              className="rounded-md bg-green-600 px-6 py-3 text-white hover:bg-green-700 text-lg font-medium"
+            >
+              Record New Payment
+            </Link>
+          )}
 
           <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -245,17 +253,23 @@ const PaymentList = () => {
                 <td className="flex items-center gap-2 px-4 py-2">
                   {!payment.cancelled && (
                     <>
-                      <Link to={`/admin/payments/edit/${payment.id}`}>
-                        <FaEdit className="text-xl hover:text-green-700" />
-                      </Link>
-                      <button onClick={() => handleCancel(payment.id)} title="Cancel Payment">
-                        <MdCancel className="text-xl hover:text-orange-700" />
-                      </button>
+                      {checkPermission('Payments', 'Edit') && (
+                        <Link to={`/admin/payments/edit/${payment.id}`}>
+                          <FaEdit className="text-xl hover:text-green-700" />
+                        </Link>
+                      )}
+                      {checkPermission('Payments', 'Edit') && (
+                        <button onClick={() => handleCancel(payment.id)} title="Cancel Payment">
+                          <MdCancel className="text-xl hover:text-orange-700" />
+                        </button>
+                      )}
                     </>
                   )}
-                  <button onClick={() => handleDelete(payment.id)} title="Delete Payment">
-                    <MdDeleteForever className="text-xl hover:text-red-700" />
-                  </button>
+                  {checkPermission('Payments', 'Delete') && (
+                    <button onClick={() => handleDelete(payment.id)} title="Delete Payment">
+                      <MdDeleteForever className="text-xl hover:text-red-700" />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

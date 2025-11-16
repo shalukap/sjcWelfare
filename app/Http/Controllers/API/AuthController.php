@@ -28,11 +28,6 @@ class AuthController extends Controller
 
 
     public function login(Request $request) {
-
-        /*return response()->json(['success'=>true,
-                                'recived_data'=>$request->all()]);*/
-
-        
         $credentials=$request->validate([
             'email'=>'required|email',
             'password'=>'required',
@@ -55,17 +50,11 @@ class AuthController extends Controller
 
     }
 
-    public function logout(){
-        Auth::guard('web')->logout();
-        $req->session()->invalidate();
-        $req->session()->regenerateToken();
+    public function logout(Request $request){
+        // For API authentication with Sanctum, revoke the current token
+        $request->user()->currentAccessToken()->delete();
+        
         return response()->json(['message'=>'logout successfully'], 200);
     }
-   
+
 }
-/*
-  "name": "Shaluka Perera",
-  "email": "shaluka@gmail.com",
-  "password": "password123",
-  "password_confirmation": "password123
-  */

@@ -2,35 +2,38 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../axios.js';
 import '../../css/bgimg.css'
-import toast from 'react-hot-toast';
+import { usePermissions } from '../contexts/PermissionContext';
 
 export default function login() {
    const nav=useNavigate()
+   const { reloadUser } = usePermissions();
    const [email,setEmail]=useState('')
    const [password,setPassword]=useState('')
 
    async function handleLogin(e){
     e.preventDefault();
-    try {      
+    try {
        api.post('/login', { email, password })
         .then(response => {
-     
       localStorage.setItem('token',response.data.token);
-     nav('/admin/dashboard')
+      // Reload user permissions after successful login
+      reloadUser().then(() => {
+        nav('/admin/dashboard')
+      });
     })
     .catch(error => {
       toast.error('You are not authorized to access this resource' );
       
     });
-    }   
-   
+    }
+
     catch (error) {
       toast.error('Username or password is incorrect' );
       
     }
    }
   return (
-   
+
   <div className='w-full h-screen flex justify-center items-center bg-blue-900 bgimg'>
   <div className='w-[600px] h-[400px] bg-white/20 backdrop-blur-xl rounded-2xl flex justify-center items-center p-10 flex-col'>
     <div className='flex'>
