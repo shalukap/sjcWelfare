@@ -1,4 +1,6 @@
-bgimg {
-    background-size: cover; 
-    background-image: url("../../public/img/back.jpg");
+.bgimg {
+    background-image: url('/img/back.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
