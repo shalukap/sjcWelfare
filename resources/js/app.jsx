@@ -54,7 +54,10 @@ export function App() {
           <Route index element={<div className="p-8"><h1 className="text-2xl font-bold">Welcome to Admin Dashboard</h1></div>} />
         </Route>
       </Routes>
+      </PermissionProvider>
+
     </BrowserRouter>
+
   );
 }
 
