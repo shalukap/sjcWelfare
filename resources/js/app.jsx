@@ -18,6 +18,7 @@ import PaymentList from './pages/payments/PaymentList';
 import PaymentForm from './pages/payments/PaymentForm';
 import UsersList from './pages/users/UsersList';
 import UserForm from './pages/users/UserForm';
+import DueReportForm from './pages/dueReports/DueReportForm';
 
 export function App() {
   return (
@@ -39,6 +40,8 @@ export function App() {
             <Route path="payments" element={<PaymentList/>} />
             <Route path="payments/create" element={<PaymentForm/>} />
             <Route path="payments/edit/:id" element={<PaymentForm/>} />
+            <Route path="payments/edit/:id" element={<PaymentForm/>} />
+            <Route path="duereports" element={<DueReportForm/>} />
             {/* Users */}
             <Route path="users" element={<UsersList/>} />
             <Route path="users/create" element={<UserForm/>} />

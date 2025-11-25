@@ -7,6 +7,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\FeeAssignmentController;
 use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\API\DueReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,4 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/payments/{id}', [PaymentController::class, 'destroy']);
     Route::post('/payments/{id}/cancel', [PaymentController::class, 'cancel']);
     Route::get('/payments/generate-pdf', [PaymentController::class, 'generatePDF']);
+    Route::get('/due-reports', [DueReportController::class, 'index']);
+    Route::post('/due-reports/generate', [DueReportController::class, 'generateDueReport']);
 });

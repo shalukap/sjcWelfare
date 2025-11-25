@@ -24,6 +24,7 @@ export default function Dashboard() {
     {name:'Student Upgrade',path:'/admin/students/upgrade', permission: {module: 'Upgrading', action: 'View'}},
     {name:'Fee Assignments',path:'/admin/fee-assignments', permission: {module: 'Fee Assignment', action: 'View'}},
     {name:'Payments',path:'/admin/payments', permission: {module: 'Payments', action: 'View'}},
+    {name:'Due Reports',path:'/admin/duereports', permission: {module: 'Due Reports', action: 'View'}},
     {name:'Users',path:'/admin/users', permission: {module: 'Users', action: 'View'}},
     {name:'Roles',path:'/admin/roles', show: false},
     {name:'Settings',path:'/admin/settings', show: false},
