@@ -2,8 +2,9 @@ import React, { use, useState } from "react";
 import { useEffect } from "react";
 import {createReport,getDues} from '../../api/dueReport.js';
 import { confirm, success, error as swalError } from '../../utils/swal';
+import { FaPrint } from "react-icons/fa6";
 const DueReportCard = () => {
-  const [dues,setDues]=useState([]);
+  const [students,setStudents]=useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedClass, setSelectedClass] = useState('');  
@@ -11,19 +12,29 @@ const DueReportCard = () => {
 
 
   useEffect(() => {
-    loadDues();
+    loadDues();   
   }, []);
-
   useEffect(() => {   
-    const filtered = dues.filter((student) => student.grade === selectedGrade && student.class === selectedClass);
-    setFilteredStudents(filtered);    
-  }, [selectedGrade, selectedClass, dues]);
+    filterStudents();     
+  }, [selectedGrade, selectedClass, students]);
+  const filterStudents = () => {
+    let filtered = [...students];
+
+    if (selectedGrade) {
+      filtered = filtered.filter(student => student.current_grade === selectedGrade);
+    }
+
+    if (selectedClass) {
+      filtered = filtered.filter(student => student.current_class === selectedClass);
+    } 
+
+    setFilteredStudents(filtered);
+  };
+  
 
 const loadDues=async() => {
   const responce=await getDues();
-  setDues(responce.data);
-  console.log(dues);
-  
+  setStudents(responce.data.studentsWithDue); 
 } 
 const grades=['1','2','3','4','5','6','7','8','9','10','11','A/L'];
 
@@ -45,8 +56,8 @@ const getClassOptions = (grade) => {
  */
   const handleGenerate = async () => {
     // Replace with your actual generate logic (API call, navigation, etc.)
-    try {
-      await createReport({ class: klass, grade: grade });
+    try {      
+      await createReport({ class: selectedClass, grade: selectedGrade });
     } catch (error) {}
     swalError('Due Report generation is not implemented yet.');
   };
@@ -54,26 +65,10 @@ const getClassOptions = (grade) => {
   return (
    <div className="h-full w-full overflow-x-auto p-4">
       <div className="mx-auto max-w-full rounded-xl bg-slate-800 p-8 text-white shadow-lg">
-        <h2 className="mb-6 text-center text-2xl font-semibold">Due payment Records</h2>
+        <h2 className="mb-6 text-center text-2xl font-semibold">Due payment Records</h2>  
+          
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-white">Grade</label>
-           {/* <select
-              value={grade}
-              onChange={(e) => setGrade(e.target.value)}
-              className="w-full rounded-md border border-gray-600 bg-slate-700 p-2.5 text-white focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="">All Grades</option>
-              {grade.map((g) => (
-                <option key={g} value={g}>
-                  {g === 'A/L' ? 'A/L' : `Grade ${g}`}
-                </option>
-              ))}
-            </select>*/}
-          </div>
-
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="mb-2 block text-sm font-medium text-white">Grade</label>
             <select
@@ -129,7 +124,7 @@ const getClassOptions = (grade) => {
               onChange={(e) => setSearchName(e.target.value)}
             />
           </div>*/}
-        </div>
+        
       </div>
 
       <div className="mt-6 overflow-hidden rounded-lg bg-white shadow">
@@ -144,9 +139,9 @@ const getClassOptions = (grade) => {
               <th className="px-4 py-3 text-left text-sm font-semibold">Due Amount</th>              
             </tr>
           </thead>
-          {/*}
+          
           <tbody className="divide-y divide-gray-200 text-sm text-slate-800">
-            {dues.map((d) => (
+            {filteredStudents.map((d) => (
               <tr key={d.id}>
                 
                 <td className="px-4 py-2">{d.admission_number}</td>
@@ -157,16 +152,20 @@ const getClassOptions = (grade) => {
                 <td className="px-4 py-2">Rs {d.due_amount}</td>               
               </tr>
             ))}
-          </tbody>*/}
+          </tbody>
         </table>
         {/* After the table, add empty state */}
-{dues.length === 0 && (
+{students.length === 0 && (
   <div className="text-center py-8 bg-white">
     <p className="text-gray-500 text-lg">No pending dues found</p>
    
   </div>
 )}
-      </div>      
+      </div>  
+      <div className="fixed right-8 bottom-8 bg-blue-600 hover:bg-red-700 text-white p-4 rounded-full cursor-pointer" onClick={handleGenerate} title="Generate Due Report">
+        <FaPrint />    
+      </div>
+    
     </div>
   );
 };

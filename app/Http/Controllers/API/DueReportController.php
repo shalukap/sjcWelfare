@@ -44,8 +44,7 @@ class DueReportController extends Controller
         
          return response()->json([
         'studentsWithDue' => $studentsWithDue
-    ]);
-       
+    ]);    
 
        
     }
@@ -53,9 +52,11 @@ class DueReportController extends Controller
 
     
    
-    public function generateDueReport(Request $request){
+    public function generateDueReport(Request $request){       
         $grade=$request->grade;
-        $class=$request->class;        
+        $class=$request->class;   
+        return response()->json(['grade'=>$grade,'class'=>$class]);
+         
         $studentQuery = Student::query()
         ->where('current_grade', $grade)
         ->where('is_active', true)
@@ -101,6 +102,6 @@ class DueReportController extends Controller
             'Content-Disposition' => 'inline; filename="duereport.pdf"',
         ]);
 
-
+        
     }
 }
